@@ -33,5 +33,8 @@
       "cypress/e2e/step_definitions/**/*.{js,ts}",
       "cypress/e2e/features/common/**/*.{js,ts}"
     ]
+  },
+  "dependencies": {
+    "mssql": "^12.2.0"
   }
 }
