@@ -10,7 +10,6 @@
     "cypress:open:dev": "npx cypress open --env CYPRESS_ENV=dev",
     "cypress:open:qa": "npx cypress open --env CYPRESS_ENV=qa",
     "cypress:open:prod": "npx cypress run --env CYPRESS_ENV=prod",
-    "cypress:open": "npm run vpn:connect && npx cypress open",
     "vpn:connect": "./cypress/connect_vpn.sh",
     "clean:reports": "rm -rf cypress/reports",
     "pretest:master": "npm run clean:reports",
