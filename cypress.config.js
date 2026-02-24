@@ -39,8 +39,9 @@ module.exports = defineConfig({
         console.error(`❌ Error cargando el ambiente ${environment}:`, e.message);
       }
 
-      // --- 3. CONFIGURACIÓN DB ---
-      const dbConfig = {
+      // Configuración DB 1: OneClearing (Consultas de Carátulas)
+      
+      const dbOCConfig = {
         user: config.env.dbOCuser,
         password: config.env.dbOCpassword,
         server: '192.168.139.161',
@@ -52,8 +53,19 @@ module.exports = defineConfig({
         }
       };
 
+      // Configuración DB 2: ACSA (Inyección de Operaciones)
+      
+      const dbACSAConfig = {
+        user: config.env.dbACSAuser,
+        password: config.env.dbACSApassword,
+        server: '192.168.99.62', // Nueva IP
+        port: 1433,
+        database: config.env.dbACSA,
+        options: { encrypt: false, trustServerCertificate: true }
+      };
+
       // --- 4. REGISTRO DE TAREAS ---
-      registerDbTasks(on, dbConfig);
+      registerDbTasks(on, { dbOCConfig, dbACSAConfig });
 
       return config;
     },

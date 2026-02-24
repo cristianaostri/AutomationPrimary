@@ -48,7 +48,8 @@ VPN_AUTHGROUP="externos.primary.com.ar"
 Realice los ajustes necesarios según su usuario y URL de conexión.
 
 Cree el archivo `connect_vpn.sh` en la carpeta `cypress`:
-
+Antes de ser ejecutado, tienen que darle los permisos apropiados a la carpeta:
+`chmod +x ./cypress/connect_vpn.sh`
 ```bash
 #!/bin/bash
 
@@ -119,6 +120,13 @@ npm run cy:open
 
 Ejemplo: `CYPRESS_ENV=qa npm run test:master`
 
+Para que Cypress no verifique si el front-end está vivo (especialmente útil cuando solo querés testear la DB o la VPN está lenta con el DNS), usá esta variable de entorno antes del comando:
+
+CYPRESS_VERIFY_SERVER_READY=false 
+CYPRESS_ENV=qa npx cypress run 
+--spec "cypress/e2e/features/db/caratulas/db_caratula.feature" **si sólo querés correr un test específico**
+
+
 ---
 
 ## ✍️ Cómo Escribir un Test
@@ -132,6 +140,13 @@ Feature: Autenticación de Usuario
         When ingresa credenciales válidas
         Then se redirige al panel de control
 ```
+
+Cree un archivo en `cypress/e2e/step_definitions/api || db || front`
+Hacer un import de:
+`import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";`
+
+Hay que seguir la misma lógica con las mismas palabras, que se expusieron en el archivo .feature
+
 
 ---
 

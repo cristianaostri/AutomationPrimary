@@ -2,7 +2,7 @@ import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 let caratulas;
 
-Given("que el sistema está conectado a la base de datos de QA", () => {
+Given("que el sistema está conectado a la base de datos del ambiente elegido", () => {
   cy.log("Utilizando configuración de ambiente: " + Cypress.env('CYPRESS_ENV'));
 });
 
