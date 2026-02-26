@@ -1,6 +1,6 @@
 Feature: Inyección de Operaciones - ACSA
 
-  Scenario: Crear operación con sufijo manual
+  Scenario: Crear operación manual en ACSA
     Given que tengo conexión a la base de datos ACSA en "192.168.99.62"
     When inyecto la operación con los siguientes datos:
       | sufijo     | AUTO        | 

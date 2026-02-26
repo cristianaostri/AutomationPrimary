@@ -10,7 +10,7 @@ When("ejecuto una consulta para obtener las últimas 5 carátulas", () => {
 
   const query = "SELECT TOP 5 * FROM Caratula.Caratula ORDER BY FechaCreacion DESC";
   
-  cy.task("queryDb", query).then((result) => {
+  cy.task("queryOC", query).then((result) => {
     caratulas = result;
   });
 });

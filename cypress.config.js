@@ -24,7 +24,7 @@ module.exports = defineConfig({
       on("file:preprocessor", createBundler({ plugins: [createEsbuildPlugin(config)] }));
 
       // --- 2. CARGA DE AMBIENTE (Usando tu lógica de projectRoot) ---
-      const environment = config.env.CYPRESS_ENV || 'qa';
+      const environment = config.env.CYPRESS_ENV || process.env.CYPRESS_ENV || 'qa';
       try {
         const envConfig = require(`${config.projectRoot}/cypress/support/environments/${environment}.js`);
         
@@ -66,7 +66,7 @@ module.exports = defineConfig({
 
       // --- 4. REGISTRO DE TAREAS ---
       registerDbTasks(on, { dbOCConfig, dbACSAConfig });
-
+      console.log('DEBUG -> Spec que Cypress va a ejecutar:', config.specPattern);
       return config;
     },
   },

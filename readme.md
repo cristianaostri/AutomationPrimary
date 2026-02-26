@@ -32,7 +32,7 @@ Instale las dependencias exactas del proyecto:
 npm install --save-dev cypress @badeball/cypress-cucumber-preprocessor @bahmutov/cypress-esbuild-preprocessor esbuild cypress-mochawesome-reporter mochawesome-merge mochawesome-report-generator
 ```
 
-### 2. Configuración del Entorno
+### 2. Configuración del Entorno en pc linux:
 
 Cree el archivo `.env.vpn` en la carpeta `cypress`:
 
@@ -152,10 +152,19 @@ Hay que seguir la misma lógica con las mismas palabras, que se expusieron en el
 
 ## 📊 Estrategia de Reportes
 
-Los reportes se generan automáticamente en `cypress/reports/`. Para visualizar los resultados, ejecute:
+Las formas de ejecutar los script:
 
-```bash
+```
+Por tag y ambiente
+CYPRESS_ENV=qa TAGS="@api" npm run test:master
+
+Por ambiente de forma individual:
+npm run test:dev -- --spec "cypress/e2e/features/api/caratulas/caratulas.feature"
+npm run report:rename 
 npm run report:open
+
+Todos
+CYPRESS_ENV=qa  npm run test:master
 ```
 
 Este documento se actualiza continuamente conforme se realizan cambios en el framework.
