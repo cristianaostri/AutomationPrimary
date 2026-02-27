@@ -9,7 +9,7 @@ cypress/videos/
 cypress/screenshots/
 cypress/results/
 .idea
-.environments/
+cypress/support/environments/*.js
 Datos.txt
 e2e/1-getting-started
 e2e/2-advanced-examples

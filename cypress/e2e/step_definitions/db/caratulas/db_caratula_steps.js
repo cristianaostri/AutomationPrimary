@@ -8,7 +8,7 @@ Given("que el sistema está conectado a la base de datos del ambiente elegido", 
 
 When("ejecuto una consulta para obtener las últimas 5 carátulas", () => {
 
-  const query = "SELECT TOP 5 * FROM Caratula.Caratula ORDER BY FechaCreacion DESC";
+  const query = "SELECT TOP 5 * FROM OneClearing_Entregas.Caratula.Caratula ORDER BY FechaCreacion DESC";
   
   cy.task("queryOC", query).then((result) => {
     caratulas = result;

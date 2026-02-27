@@ -38,14 +38,16 @@ module.exports = defineConfig({
       } catch (e) {
         console.error(`❌ Error cargando el ambiente ${environment}:`, e.message);
       }
-
-      // Configuración DB 1: OneClearing (Consultas de Carátulas)
+      const dbServer = environment === 'dev' 
+      ? '192.168.139.160' 
+      : (config.env.dbOCserver_QA || '192.168.139.161');
       
+      dbPort = 1433;
       const dbOCConfig = {
         user: config.env.dbOCuser,
         password: config.env.dbOCpassword,
-        server: '192.168.139.161',
-        port: 1433,
+        server: dbServer,
+        port: dbPort,
         database: config.env.dbOneClearing,
         options: {
           encrypt: false,
