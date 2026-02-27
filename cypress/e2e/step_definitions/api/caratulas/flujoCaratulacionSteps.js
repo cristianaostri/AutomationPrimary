@@ -1,6 +1,6 @@
 
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-
+const url = `${Cypress.env("mainApiUrl")}`;
 Given('que me autentico por API', () => {
   
 });
@@ -8,18 +8,20 @@ Given('que me autentico por API', () => {
 // --- ACCIÓN 1: LISTAR ---
 When('obtengo la lista de carátulas en estado pendiente de firma', () => {
   const token = Cypress.env('accessToken');
-  const urlListado = 'https://api.oneclearing.testing.primary/api/v1/Caratulas?estadoId=1';
-
+  
+  
   cy.request({
     method: 'GET',
-    url: urlListado,
+    url: `${url}/Caratulas?estado=pendienteFirma`,
     headers: { Authorization: `Bearer ${token}` }
   }).then((response) => {
     expect(response.status).to.eq(200);
     cy.log('Carátulas pendientes:', response.body);
     // Mapeamos solo los números para el body del POST
     const listado = response.body.value || response.body.data || response.body.items;
-
+    if (listado && listado.length === 0) {
+      throw new Error("La respuesta contiene una lista vacía.");
+    }
     if (!Array.isArray(listado)) {
         cy.log('ESTRUCTURA RECIBIDA:', JSON.stringify(response.body));
         throw new Error("La respuesta no contiene un array. Revisá la consola (F12) para ver la propiedad correcta.");
@@ -43,7 +45,7 @@ When('realizo la firma masiva de las carátulas encontradas', function () {
 
   cy.request({
     method: 'POST',
-    url: 'https://api.oneclearing.testing.primary/api/v1/Caratulas/Firmar',
+    url: `${url}/Caratulas/Firmar`,
     headers: { Authorization: `Bearer ${token}` },
     body: {
       caratulas: ids
@@ -61,7 +63,7 @@ Then('realizo la caratulación definitiva de las mismas', function () {
 
   cy.request({
     method: 'POST',
-    url: 'https://api.oneclearing.testing.primary/api/v1/Caratulas/CaratulacionDefinitiva',
+    url: `${url}/Caratulas/CaratulacionDefinitiva`,
     headers: { Authorization: `Bearer ${token}` },
     body: {
       caratulas: ids
