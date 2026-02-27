@@ -1,9 +1,8 @@
-// BIEN
+
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-// --- PRECONDICIÓN (GIVEN) ---
+
 Given('que me autentico por API', () => {
   
-  cy.loginViaApi(); 
 });
 
 // --- ACCIÓN 1: LISTAR ---
@@ -31,6 +30,9 @@ When('obtengo la lista de carátulas en estado pendiente de firma', () => {
     
     cy.log(`Se encontraron ${ids.length} carátulas.`);
     cy.wrap(ids).as('caratulasIds');
+    if (ids.length === 0) {
+      throw new Error("No se encontraron carátulas pendientes de firma.");
+    }
   });
 });
 

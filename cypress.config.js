@@ -24,7 +24,7 @@ module.exports = defineConfig({
       on("file:preprocessor", createBundler({ plugins: [createEsbuildPlugin(config)] }));
 
       // --- 2. CARGA DE AMBIENTE (Usando tu lógica de projectRoot) ---
-      const environment = config.env.CYPRESS_ENV || 'qa';
+      const environment = config.env.CYPRESS_ENV || process.env.CYPRESS_ENV || 'qa';
       try {
         const envConfig = require(`${config.projectRoot}/cypress/support/environments/${environment}.js`);
         
@@ -38,14 +38,16 @@ module.exports = defineConfig({
       } catch (e) {
         console.error(`❌ Error cargando el ambiente ${environment}:`, e.message);
       }
-
-      // Configuración DB 1: OneClearing (Consultas de Carátulas)
+      const dbServer = environment === 'dev' 
+      ? '192.168.139.160' 
+      : (config.env.dbOCserver_QA || '192.168.139.161');
       
+      dbPort = 1433;
       const dbOCConfig = {
         user: config.env.dbOCuser,
         password: config.env.dbOCpassword,
-        server: '192.168.139.161',
-        port: 1433,
+        server: dbServer,
+        port: dbPort,
         database: config.env.dbOneClearing,
         options: {
           encrypt: false,
@@ -66,7 +68,7 @@ module.exports = defineConfig({
 
       // --- 4. REGISTRO DE TAREAS ---
       registerDbTasks(on, { dbOCConfig, dbACSAConfig });
-
+      console.log('DEBUG -> Spec que Cypress va a ejecutar:', config.specPattern);
       return config;
     },
   },

@@ -4,20 +4,27 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "run:server": "json-server --watch db.json",
-    "e2e:chrome": "cypress run --browser chrome",
-    "cy:open": "cypress open",
+
     "test:headless": "cypress run",
-    "cypress:open:dev": "npx cypress open --env CYPRESS_ENV=dev",
-    "cypress:open:qa": "npx cypress open --env CYPRESS_ENV=qa",
-    "cypress:open:prod": "npx cypress run --env CYPRESS_ENV=prod",
+    
+    "cy:open:dev": "npx cypress open --env CYPRESS_ENV=dev",
+    "cy:open:qa": "npx cypress open --env CYPRESS_ENV=qa",
+    "cy:open:uat": "npx cypress open --env CYPRESS_ENV=uat",
+
+    "test:run": "npx cypress run --browser chrome --env CYPRESS_ENV=${CYPRESS_ENV:-qa},TAGS=\"${TAGS:-}\"",
+    "test:dev": "npx cypress run --env CYPRESS_ENV=dev --browser chrome",
+    "test:qa": "npx cypress run --env CYPRESS_ENV=qa --browser chrome",
+    "test:uat": "npx cypress run --env CYPRESS_ENV=uat --browser chrome",
+    
     "vpn:connect": "./cypress/connect_vpn.sh",
+
     "clean:reports": "rm -rf cypress/reports",
     "pretest:master": "npm run clean:reports",
-    "test:run": "npx cypress run --browser chrome",
+    "report:merge": "npx mochawesome-merge cypress/reports/temp_jsons/*.json > cypress/reports/master_report.json",
     "report:rename": "mv cypress/reports/temp_jsons/index.html \"cypress/reports/report_${CYPRESS_ENV:-qa}_$(date +%Y%m%d_%H%M).html\"",
     "clean:temp": "rm -rf cypress/reports/temp_jsons",
     "report:open": "xdg-open \"cypress/reports/$(ls -t cypress/reports | grep .html | head -1)\"",
-    "test:master": "npm run test:run ; npm run report:merge && npm run report:generate ; npm run report:rename && npm run report:open && npm run clean:temp"
+    "test:master": "npm run clean:reports ; npm run test:run ; npm run report:merge && npm run report:generate ; npm run report:rename && npm run report:open && npm run clean:temp"
   },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
@@ -32,7 +39,9 @@
     "stepDefinitions": [
       "cypress/e2e/step_definitions/**/*.{js,ts}",
       "cypress/e2e/features/common/**/*.{js,ts}"
-    ]
+    ],
+    "filterSpecs": true,
+    "omitFilteredSpecs": true
   },
   "dependencies": {
     "mssql": "^12.2.0"

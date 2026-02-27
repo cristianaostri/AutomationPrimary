@@ -28,38 +28,33 @@
 Cypress.Commands.add('loginViaApi', () => {
   const username = Cypress.env('apiUser');
   const password = Cypress.env('apiPassword');
-  const application = Cypress.env('apiApplication');
-  const authApiBaseUrl = Cypress.env('authApiUrl');
+  const mainApiUrl = Cypress.env('mainApiUrl'); // https://api.oneclearing.testing.primary/api/v1
 
-  // Usamos cy.session para cachear el login
-  cy.session([username, application], () => {
+  // 1. Gestionamos la sesión (persiste localStorage)
+  cy.session([username, password], () => {
     cy.log('*** Generando nueva sesión de API ***');
-    
     cy.request({
       method: 'POST',
-      url: `${authApiBaseUrl}/Users/token`,
-      form: true,
-      body: { username, password, application }
-    }).then(response => {
+      url: `${mainApiUrl}/Auth/Token`, 
+      form: true, // multipart/form-data según Swagger
+      body: { username, password }
+    }).then((response) => {
       expect(response.status).to.eq(200);
       const token = response.body.access_token;
-
-      // 1. Lo guardamos en localStorage (Persistencia de Navegador)
-      window.localStorage.setItem('token', token);
       
-      // 2. Lo guardamos en Cypress.env (Persistencia de Memoria)
-      Cypress.env('accessToken', token);
+      // Guardamos en localStorage (esto SÍ lo guarda cy.session)
+      window.localStorage.setItem('token', token);
     });
   }, {
-    // Validamos que el token no sea nulo para considerar la sesión válida
     validate() {
-      const token = window.localStorage.getItem('token');
-      return token !== null && token.length > 0;
+      // Validamos que el token exista en el storage
+      return window.localStorage.getItem('token') !== null;
     }
   });
 
-  // Sincronización: cy.session restaura el localStorage, 
-  // pero debemos asegurar que Cypress.env esté actualizado para los comandos de API
+  // 2. SINCRONIZACIÓN CRÍTICA: 
+  // cy.session restaura el localStorage, pero debemos re-poblar el Cypress.env 
+  // para que los comandos de API tengan el token en cada escenario.
   cy.then(() => {
     const cachedToken = window.localStorage.getItem('token');
     Cypress.env('accessToken', cachedToken);
