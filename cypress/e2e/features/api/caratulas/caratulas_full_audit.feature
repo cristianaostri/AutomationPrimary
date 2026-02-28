@@ -7,4 +7,6 @@ Feature: Auditoría Integral de API Carátulas
     Then la respuesta debe tener un status 200
     And el tiempo de respuesta debe ser inferior a 800ms
     And no debe haber campos con valores vacíos en los registros
-    And los datos de la API deben coincidir con la base de datos OneClearing
+    And no debe haber caratulas en estadoId 4 y 5
+    And cada carátula debe tener un caratulaNumero único  
+ 

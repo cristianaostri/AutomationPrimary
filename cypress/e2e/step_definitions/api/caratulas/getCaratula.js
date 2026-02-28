@@ -70,13 +70,39 @@ Then("no debe haber campos con valores vacíos en los registros", () => {
   }
 });
 
-Then("los datos de la API deben coincidir con la base de datos OneClearing", () => {
-  // Validamos sobre la lista correcta
-  const apiData = apiResponse.body.items ? apiResponse.body.items[0] : apiResponse.body[0];
-  const query = `SELECT TOP 1 * FROM Caratulas WHERE id = ${apiData.caratulaNumero || apiData.id}`;
+Then("no debe haber caratulas en estadoId 4 y 5", () => {
+  const registros = apiResponse.body.items;
+  const caratulasInvalidas = registros.filter(item => item.estadoId === 4 || item.estadoId === 5);
   
-  cy.task("queryOC", query).then((dbResult) => {
-    const dbData = dbResult[0];
-    expect(apiData.estado.trim()).to.eq(dbData.Estado.trim());
-  });
+  if (caratulasInvalidas.length > 0) {
+    console.table(caratulasInvalidas);
+    cy.log('⚠️ Se encontraron carátulas en estadoId 4 o 5. Revisar console.table en DevTools');
+    const mensajeError = caratulasInvalidas.map(c => `CarátulaNumero: ${c.caratulaNumero}, EstadoId: ${c.estadoId}`).join('\n');
+    expect(caratulasInvalidas, `Se detectaron ${caratulasInvalidas.length} carátulas inválidas:\n${mensajeError}`).to.be.empty;
+  } else {
+    cy.log(`✅ Éxito: No se encontraron carátulas en estadoId 4 o 5.`);
+  }
 });
+
+Then("cada carátula debe tener un caratulaNumero único", () => {
+  const registros = apiResponse.body.items;
+  const numerosVistos = new Set();
+  const duplicados = [];
+
+  registros.forEach(item => {
+    if (numerosVistos.has(item.caratulaNumero)) {
+      duplicados.push(item);
+    } else {
+      numerosVistos.add(item.caratulaNumero);
+    }
+  });
+
+  if (duplicados.length > 0) {
+    console.table(duplicados);
+    cy.log('⚠️ Se encontraron carátulas con caratulaNumero duplicado. Revisar console.table en DevTools');
+    const mensajeError = duplicados.map(c => `CarátulaNumero: ${c.caratulaNumero}`).join('\n');
+    expect(duplicados, `Se detectaron ${duplicados.length} carátulas con número duplicado:\n${mensajeError}`).to.be.empty;
+  } else {
+    cy.log(`✅ Éxito: Todos los caratulaNumero son únicos.`);
+  }
+}); 
