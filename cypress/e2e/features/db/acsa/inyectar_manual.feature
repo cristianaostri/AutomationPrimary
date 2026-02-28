@@ -7,8 +7,8 @@ Feature: Inyección de Operaciones - ACSA
       | ruedalID   | 1           |
       | ejecID     | 1           |
       | cant       | 8           |
-      | contrID    | 74793       |
+      | contrID    | 74802       |
       | ctaCpraID  | 3876        |
       | precio     | 350         |
-      | ctaVtaID   | 2953        |
+      | ctaVtaID   | 2769        |
       | usuario    | cris        |
