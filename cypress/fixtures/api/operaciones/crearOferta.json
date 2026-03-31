@@ -1,0 +1,15 @@
+{
+  "tipoTransporte": 1,
+  "tipoEntregador": 1,
+  "cosecha": 2627,
+  "convenida": {
+    "agenteConvenida": "null",
+    "clienteConvenida": "null"
+  },
+  "operaciones": [
+    {
+      "operacionNumero": 28108071,
+      "cantidadToneladas": 300
+    }
+  ]
+}
