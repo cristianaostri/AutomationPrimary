@@ -2,7 +2,6 @@
 Feature: Flujo completo de Carátulas
 
   Background: Autenticación exitosa
-    # Este Given DEBE estar definido en el JS
     Given que me autentico por API
 
   Scenario: Firmar y carátular definitivamente carátulas pendientes

@@ -1,4 +1,3 @@
-
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 const url = `${Cypress.env("mainApiUrl")}`;
 Given('que me autentico por API', () => {

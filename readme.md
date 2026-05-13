@@ -1,171 +1,136 @@
-# 📋 Cypress QA Framework - README
+# Proyecto Cypress Primary
 
-## 📋 Tabla de Contenidos
-1. [Requisitos Previos](#-requisitos-previos)
-2. [Guía de Onboarding (Instalación)](#-guía-de-onboarding-instalación)
-3. [Estructura del Proyecto](#-estructura-del-proyecto)
-4. [Flujo de Trabajo Diario (Scripts)](#-flujo-de-trabajo-diario-scripts)
-5. [Cómo Escribir un Test](#-cómo-escribir-un-test)
-6. [Estrategia de Reportes](#-estrategia-de-reportes)
+## 📌 Objetivo
+Este repositorio contiene el framework de pruebas automatizadas con Cypress + Cucumber para el proyecto Primary.
+
+Incluye pruebas de interfaz, API y bases de datos, además de integración con la base ACSA y generación de reportes Mochawesome.
 
 ---
 
-## 🛠️ Requisitos Previos
+## 🚀 Clonar e instalar
 
-Para garantizar el funcionamiento correcto del framework en su entorno local, asegúrese de contar con:
+1. Clonar el repositorio:
 
-* **Node.js**: v18.0.0 o posterior
-* **Google Chrome**: Navegador oficial requerido para la ejecución de las suites de prueba
-* **OpenConnect**: Herramienta necesaria para la conexión VPN de Primary (Linux/Ubuntu)
+```bash
+git clone <URL_DEL_REPO>
+cd "Primary2026 original repo"
+```
+
+2. Instalar dependencias:
+
+```bash
+npm install
+```
+
+3. Instalar desde `requirements.txt` (opcional):
+
+```bash
+npm run install:requirements
+```
+
+> `package.json` es el manifiesto principal de Node. `requirements.txt` se incluye como referencia y ayuda a ver todas las librerías usadas en el proyecto.
 
 ---
 
-## 🚀 Guía de Onboarding (Instalación)
+## 🧩 Dependencias adicionales necesarias
 
-Tras clonar el repositorio, complete los siguientes **pasos obligatorios** para configurar su entorno local y prevenir falsos positivos o fallos de infraestructura.
+El repositorio omite algunos archivos locales sensibles en `.gitignore`. Estos archivos deben entregarse o recrearse manualmente:
 
-### 1. Sincronización de Dependencias
+* `.env.vpn` – variables de configuración local de la VPN
+* `cypress/connect_vpn.sh` – script de conexión VPN local
 
-Instale las dependencias exactas del proyecto:
-
-```bash
-npm install --save-dev cypress @badeball/cypress-cucumber-preprocessor @bahmutov/cypress-esbuild-preprocessor esbuild cypress-mochawesome-reporter mochawesome-merge mochawesome-report-generator
-```
-
-### 2. Configuración del Entorno en pc linux:
-
-Cree el archivo `.env.vpn` en la carpeta `cypress`:
-
-```env
-# Archivo: .env.vpn (Local)
-VPN_PROTOCOL="gp"
-VPN_HOST="externos.primary.com.ar"
-VPN_USER="su_usuario"
-VPN_MTU="1450"
-VPN_AUTHGROUP="externos.primary.com.ar"
-```
-
-Realice los ajustes necesarios según su usuario y URL de conexión.
-
-Cree el archivo `connect_vpn.sh` en la carpeta `cypress`:
-Antes de ser ejecutado, tienen que darle los permisos apropiados a la carpeta:
-`chmod +x ./cypress/connect_vpn.sh`
-```bash
-#!/bin/bash
-
-if [ -f ".env.vpn" ]; then
-    ENV_FILE=".env.vpn"
-elif [ -f "$(dirname "$0")/../.env.vpn" ]; then
-    ENV_FILE="$(dirname "$0")/../.env.vpn"
-else
-    echo "❌ Error: No se encontró el archivo .env.vpn en la raíz del proyecto."
-    echo "Asegúrese de que el archivo exista en: $(pwd)"
-    exit 1
-fi
-
-export $(grep -v '^#' "$ENV_FILE" | xargs)
-
-echo "🛡️ Iniciando VPN para $VPN_USER en $VPN_HOST..."
-
-sudo openconnect --protocol=$VPN_PROTOCOL \
-    $VPN_HOST \
-    --user=$VPN_USER \
-    --base-mtu=$VPN_MTU \
-    --authgroup=$VPN_AUTHGROUP
-```
-
-### 3. Verificación de Cypress
-
-Abra Cypress para validar la instalación:
-
-```bash
-npm run cy:open
-```
+Si cualquiera de estos archivos no está presente al clonar, el proyecto no funcionará correctamente.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🛠️ Requisitos previos
 
-```
+* Node.js 18 o superior
+* Google Chrome
+* OpenConnect (para conexión VPN en Linux)
+
+---
+
+## 📁 Estructura básica del proyecto
+
+```text
 .
 ├── cypress/
 │   ├── e2e/
-│   │   ├── features/          # ✍️ Archivos .feature en Gherkin (Especificación)
-│   │   └── step_definitions/  # 🧠 Implementación en JavaScript de los steps
-│   ├── reports/               # 📊 Artefactos y reportes HTML (Excluido de Git)
-│   ├── screenshots/           # 📸 Evidencia visual automática en caso de fallos
-│   ├── support/               
-│   │   ├── commands.js        # Comandos Cypress personalizados
-│   │   ├── e2e.js             # Configuración global y hooks
-│   │   └── environments/      # Configuraciones por ambiente (qa, dev, prod)
-│   └── connect_vpn.sh         # 🛡️ Script automatizado de VPN
-├── .env.vpn                   # Variables locales de VPN (Ignorado)
-├── cypress.config.js          # Configuración de Cypress, Esbuild y Mochawesome
-├── package.json               # Scripts de ejecución y dependencias
-└── README.md                  # Este documento
+│   │   ├── features/
+│   │   └── step_definitions/
+│   ├── reports/
+│   ├── screenshots/
+│   ├── support/
+│   │   ├── commands.js
+│   │   ├── e2e.js
+│   │   └── environments/
+│   └── connect_vpn.sh
+├── cypress.config.js
+├── package.json
+├── requirements.txt
+└── readme.md
 ```
 
 ---
 
-## ⚙️ Flujo de Trabajo Diario (Scripts)
+## ⚙️ Comandos principales
 
 | Comando | Descripción |
-|---------|-------------|
-| `npm run vpn:connect` | Establece la conexión VPN solicitando credenciales |
-| `npm run cypress:open` | Abre el Test Runner interactivo para desarrollo |
-| `npm run test:run` | Ejecuta Cypress en modo headless con Chrome |
-| `npm run test:master` | Pipeline completo: pruebas → reporte HTML → apertura |
-
-**Nota**: Para ejecutar en un ambiente específico, establezca la variable `CYPRESS_ENV`.
-
-Ejemplo: `CYPRESS_ENV=qa npm run test:master`
-
-Para que Cypress no verifique si el front-end está vivo (especialmente útil cuando solo querés testear la DB o la VPN está lenta con el DNS), usá esta variable de entorno antes del comando:
-
-CYPRESS_VERIFY_SERVER_READY=false 
-CYPRESS_ENV=qa npx cypress run 
---spec "cypress/e2e/features/db/caratulas/db_caratula.feature" **si sólo querés correr un test específico**
-
+|---|---|
+| `npm install` | Instala dependencias desde `package.json` |
+| `npm run install:requirements` | Instala las dependencias listadas en `requirements.txt` |
+| `npm run cy:open` | Abre el Test Runner interactivo |
+| `npm run cy:open:qa` | Abre Cypress con `CYPRESS_ENV=qa` |
+| `npm run test:run` | Ejecuta Cypress headless en Chrome |
+| `npm run test:dev` | Ejecuta pruebas con `CYPRESS_ENV=dev` |
+| `npm run test:qa` | Ejecuta pruebas con `CYPRESS_ENV=qa` |
+| `npm run test:uat` | Ejecuta pruebas con `CYPRESS_ENV=uat` |
+| `npm run test:master` | Ejecuta pruebas, genera reportes y abre el último reporte |
+| `npm run vpn:connect` | Ejecuta el script local de VPN |
 
 ---
 
-## ✍️ Cómo Escribir un Test
+## 🌐 Ejecución por ambiente
 
-Cree un archivo en `cypress/e2e/features/`:
-
-```gherkin
-Feature: Autenticación de Usuario
-    Scenario: Inicio de sesión exitoso
-        Given el usuario se encuentra en la página de inicio de sesión
-        When ingresa credenciales válidas
-        Then se redirige al panel de control
+```bash
+CYPRESS_ENV=qa npm run test:run
 ```
 
-Cree un archivo en `cypress/e2e/step_definitions/api || db || front`
-Hacer un import de:
-`import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";`
+O bien:
 
-Hay que seguir la misma lógica con las mismas palabras, que se expusieron en el archivo .feature
-
+```bash
+npm run test:qa
+```
 
 ---
 
-## 📊 Estrategia de Reportes
+## 📄 Uso de `requirements.txt`
 
-Las formas de ejecutar los script:
+El archivo `requirements.txt` contiene la lista de paquetes usados en el proyecto.
 
-```
-Por tag y ambiente
-CYPRESS_ENV=qa TAGS="@api" npm run test:master
+Para instalar todos los paquetes listados:
 
-Por ambiente de forma individual:
-npm run test:dev -- --spec "cypress/e2e/features/api/caratulas/caratulas.feature"
-npm run report:rename 
-npm run report:open
-
-Todos
-CYPRESS_ENV=qa  npm run test:master
+```bash
+npm run install:requirements
 ```
 
-Este documento se actualiza continuamente conforme se realizan cambios en el framework.
+---
+
+## 🧪 Flujo de reportes
+
+1. Ejecutar la suite:
+   ```bash
+   npm run test:master
+   ```
+2. El reporte se genera en `cypress/reports/`.
+3. El comando `npm run report:open` intentará abrir el último HTML generado.
+
+---
+
+## 📌 Notas importantes
+
+* El archivo `.env.vpn` no se debe versionar; está excluido por `.gitignore`.
+* Si el comando `npm run test:master` falla, verifique que `cypress/connect_vpn.sh` y `.env.vpn` existan y que `npm install` haya instalado todas las dependencias.
+* La lista de dependencias reales se encuentra en `package.json`.
 

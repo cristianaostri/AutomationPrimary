@@ -16,3 +16,5 @@ e2e/2-advanced-examples
 cypress/reports
 cypress/connect_vpn.sh
 .env.vpn
+.clinerules
+switch-env.sh
