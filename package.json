@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "install:requirements": "xargs npm install --save-dev < requirements.txt",
     "run:server": "json-server --watch db.json",
 
     "test:headless": "cypress run",
     
+    "cy:open": "npx cypress open",
     "cy:open:dev": "npx cypress open --env CYPRESS_ENV=dev",
     "cy:open:qa": "npx cypress open --env CYPRESS_ENV=qa",
     "cy:open:uat": "npx cypress open --env CYPRESS_ENV=uat",
@@ -21,6 +23,7 @@
     "clean:reports": "rm -rf cypress/reports",
     "pretest:master": "npm run clean:reports",
     "report:merge": "npx mochawesome-merge cypress/reports/temp_jsons/*.json > cypress/reports/master_report.json",
+    "report:generate": "npx marge cypress/reports/temp_jsons/*.json --reportDir cypress/reports",
     "report:rename": "mv cypress/reports/temp_jsons/index.html \"cypress/reports/report_${CYPRESS_ENV:-qa}_$(date +%Y%m%d_%H%M).html\"",
     "clean:temp": "rm -rf cypress/reports/temp_jsons",
     "report:open": "xdg-open \"cypress/reports/$(ls -t cypress/reports | grep .html | head -1)\"",
@@ -31,7 +34,9 @@
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "cypress": "^13.0.0",
     "cypress-mochawesome-reporter": "^3.8.4",
+    "dayjs": "^1.11.9",
     "esbuild": "^0.20.0",
+    "json-server": "^0.17.3",
     "mochawesome-merge": "^4.3.0",
     "mochawesome-report-generator": "^6.2.0"
   },
