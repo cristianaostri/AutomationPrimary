@@ -19,11 +19,17 @@ pipeline {
                     url: 'https://github.com/cristianaostri/AutomationPrimary'
             }
         }
+        
         stage('Instalar dependencias') {
             steps {
                 sh 'npm install --legacy-peer-deps'
             }
         }
+	stage('Limpiar reportes anteriores') {
+	    steps {
+		sh 'rm -rf cypress/reports/temp_jsons || true'
+	    }
+	}
         stage('Ejecutar tests Cypress') {
             steps {
                 withCredentials([
