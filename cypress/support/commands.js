@@ -28,35 +28,19 @@
 Cypress.Commands.add('loginViaApi', () => {
   const username = Cypress.env('apiUser');
   const password = Cypress.env('apiPassword');
-  const mainApiUrl = Cypress.env('mainApiUrl'); // https://api.oneclearing.testing.primary/api/v1
+  const mainApiUrl = Cypress.env('mainApiUrl');
 
-  // 1. Gestionamos la sesión (persiste localStorage)
-  cy.session([username, password], () => {
-    cy.log('*** Generando nueva sesión de API ***');
-    cy.request({
-      method: 'POST',
-      url: `${mainApiUrl}/Auth/Token`, 
-      form: true, // multipart/form-data según Swagger
-      body: { username, password }
-    }).then((response) => {
-      expect(response.status).to.eq(200);
-      const token = response.body.access_token;
-      
-      // Guardamos en localStorage (esto SÍ lo guarda cy.session)
-      window.localStorage.setItem('token', token);
-    });
-  }, {
-    validate() {
-      // Validamos que el token exista en el storage
-      return window.localStorage.getItem('token') !== null;
-    }
-  });
-
-  // 2. SINCRONIZACIÓN CRÍTICA: 
-  // cy.session restaura el localStorage, pero debemos re-poblar el Cypress.env 
-  // para que los comandos de API tengan el token en cada escenario.
-  cy.then(() => {
-    const cachedToken = window.localStorage.getItem('token');
-    Cypress.env('accessToken', cachedToken);
+  cy.request({
+    method: 'POST',
+    url: `${mainApiUrl}/Auth/Token`,
+    form: true,
+    body: { username, password, application: 'OneClearing' },
+    failOnStatusCode: false,
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    const token = response.body.access_token;
+    expect(token, 'Token debe existir').to.exist;
+    Cypress.env('accessToken', token);
+    cy.log(`✅ Token obtenido: ${token.substring(0, 20)}...`);
   });
 });
