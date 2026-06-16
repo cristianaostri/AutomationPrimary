@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     parameters {
         choice(
             name: 'ENVIRONMENT',
@@ -13,7 +12,6 @@ pipeline {
             description: 'Qué suite de tests ejecutar'
         )
     }
-
     stages {
         stage('Clonar repositorio') {
             steps {
@@ -21,26 +19,23 @@ pipeline {
                     url: 'https://github.com/cristianaostri/AutomationPrimary'
             }
         }
-
         stage('Instalar dependencias') {
             steps {
                 sh 'npm install --legacy-peer-deps'
             }
         }
-
         stage('Ejecutar tests Cypress') {
-    steps {
-        withCredentials([
-            string(credentialsId: 'API_USER', variable: 'API_USER'),
-            string(credentialsId: 'API_PASSWORD', variable: 'API_PASSWORD')
-        ]) {
-            sh """npx cypress run --browser chrome --headless \
-              --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}",mainApiUrl=https://api.oneclearing.testing.primary/api/v1,apiUser=${API_USER},apiPassword=${API_PASSWORD}"""
+            steps {
+                withCredentials([
+                    string(credentialsId: 'API_USER', variable: 'API_USER'),
+                    string(credentialsId: 'API_PASSWORD', variable: 'API_PASSWORD')
+                ]) {
+                    sh """npx cypress run --browser chrome --headless \
+                      --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}",mainApiUrl=https://api.oneclearing.testing.primary/api/v1,apiUser=\${API_USER},apiPassword=\${API_PASSWORD}"""
+                }
+            }
         }
     }
-}
-    }
-
     post {
         always {
             archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
