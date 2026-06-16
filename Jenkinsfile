@@ -42,21 +42,14 @@ pipeline {
 
     post {
         always {
-            publishHTML([
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'cypress/reports',
-                reportFiles: 'index.html',
-                reportName: "Reporte | ${params.ENVIRONMENT.toUpperCase()} | ${params.TAGS}"
-            ])
-            echo "📊 Reporte publicado para ${params.ENVIRONMENT} - ${params.TAGS}"
+            archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
+            echo "📊 Reporte archivado — ${params.ENVIRONMENT} | ${params.TAGS}"
         }
         success {
-            echo "✅ Tests OK en ${params.ENVIRONMENT}"
+            echo "✅ Tests OK en ${params.ENVIRONMENT} con ${params.TAGS}"
         }
         failure {
-            echo "❌ Tests fallaron en ${params.ENVIRONMENT} con tag ${params.TAGS}"
+            echo "❌ Tests fallaron en ${params.ENVIRONMENT} con ${params.TAGS}"
         }
     }
 }
