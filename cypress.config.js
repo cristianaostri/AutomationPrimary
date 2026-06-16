@@ -16,11 +16,10 @@ module.exports = defineConfig({
     overwrite: false
   },
   e2e: {
-    
     specPattern: "cypress/e2e/features/**/*.feature",
-    allowCypressEnv: true, 
+    allowCypressEnv: true,
     async setupNodeEvents(on, config) {
-       // --- 1. MANEJO DE NAVEGADORES (Solución estándar de memoria para Linux) ---
+
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.name === 'chrome' || browser.name === 'chromium') {
           launchOptions.args.push('--disable-dev-shm-usage');
@@ -28,55 +27,47 @@ module.exports = defineConfig({
         return launchOptions;
       });
 
-      // --- 1. PLUGINS (Gherkin & Reports) ---
       await addCucumberPreprocessorPlugin(on, config);
       require('cypress-mochawesome-reporter/plugin')(on);
       on("file:preprocessor", createBundler({ plugins: [createEsbuildPlugin(config)] }));
-      
-      // --- 2. CARGA DE AMBIENTE (Usando tu lógica de projectRoot) ---
+
       const environment = config.env.CYPRESS_ENV || process.env.CYPRESS_ENV || 'qa';
+
+      // Carga el archivo de ambiente si existe (local), si no usa solo variables de entorno (CI)
       try {
         const envConfig = require(`${config.projectRoot}/cypress/support/environments/${environment}.js`);
-        
-        // Seteamos la baseUrl para que cy.visit('/') funcione
-        config.baseUrl = envConfig.baseUrl; 
-        
-        // Mergeamos el resto de variables (user, pass, etc)
+        config.baseUrl = envConfig.baseUrl;
         config.env = { ...config.env, ...envConfig };
-        
-        console.log(`✅ Ambiente [${environment}] cargado con éxito.`);
+        console.log(`✅ Ambiente [${environment}] cargado desde archivo.`);
       } catch (e) {
-        console.error(`❌ Error cargando el ambiente ${environment}:`, e.message);
+        console.log(`ℹ️ Archivo de ambiente [${environment}] no encontrado, usando variables de entorno.`);
+        // baseUrl desde env si viene por --env
+        if (config.env.baseUrl) config.baseUrl = config.env.baseUrl;
       }
-      const dbServer = environment === 'dev' 
-      ? '192.168.139.160' 
-      : (config.env.dbOCserver_QA || '192.168.139.161');
-      
-      dbPort = 1433;
+
+      const environment2 = config.env.CYPRESS_ENV || 'qa';
+      const dbServer = environment2 === 'dev'
+        ? '192.168.139.160'
+        : (config.env.dbOCserver_QA || '192.168.139.161');
+
       const dbOCConfig = {
         user: config.env.dbOCuser,
         password: config.env.dbOCpassword,
         server: dbServer,
-        port: dbPort,
+        port: 1433,
         database: config.env.dbOneClearing,
-        options: {
-          encrypt: false,
-          trustServerCertificate: true // Importante para redes locales Primary
-        }
+        options: { encrypt: false, trustServerCertificate: true }
       };
 
-      // Configuración DB 2: ACSA (Inyección de Operaciones)
-      
       const dbACSAConfig = {
         user: config.env.dbACSAuser,
         password: config.env.dbACSApassword,
-        server: '192.168.99.62', // Nueva IP
+        server: '192.168.99.62',
         port: 1433,
         database: config.env.dbACSA,
         options: { encrypt: false, trustServerCertificate: true }
       };
 
-      // --- 4. REGISTRO DE TAREAS ---
       registerDbTasks(on, { dbOCConfig, dbACSAConfig });
       console.log('DEBUG -> Spec que Cypress va a ejecutar:', config.specPattern);
       return config;
