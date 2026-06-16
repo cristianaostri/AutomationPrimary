@@ -41,12 +41,18 @@ pipeline {
                 }
             }
         }
+        stage('Copiar reporte') {
+   	 steps {
+        sh 'cp cypress/reports/temp_jsons/index.html /home/cristian/Escritorio/reportes/reporte_$(date +%Y%m%d_%H%M).html || true'
+    }
+}
     }
     post {
-        always {
-            archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
-            echo "📊 Reporte archivado — ${params.ENVIRONMENT} | ${params.TAGS}"
-        }
+       always {
+        archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
+        sh 'cp cypress/reports/temp_jsons/index.html /reportes/reporte_${BUILD_NUMBER}_${params.TAGS}.html || true'
+        echo "📊 Reporte archivado — ${params.ENVIRONMENT} | ${params.TAGS}"
+    	}
         success {
             echo "✅ Tests OK en ${params.ENVIRONMENT} con ${params.TAGS}"
         }
