@@ -33,7 +33,6 @@ module.exports = defineConfig({
 
       const environment = config.env.CYPRESS_ENV || process.env.CYPRESS_ENV || 'qa';
 
-      // Carga el archivo de ambiente si existe (local), si no usa solo variables de entorno (CI)
       try {
         const envConfig = require(`${config.projectRoot}/cypress/support/environments/${environment}.js`);
         config.baseUrl = envConfig.baseUrl;
@@ -41,12 +40,10 @@ module.exports = defineConfig({
         console.log(`✅ Ambiente [${environment}] cargado desde archivo.`);
       } catch (e) {
         console.log(`ℹ️ Archivo de ambiente [${environment}] no encontrado, usando variables de entorno.`);
-        // baseUrl desde env si viene por --env
         if (config.env.baseUrl) config.baseUrl = config.env.baseUrl;
       }
 
-      const environment2 = config.env.CYPRESS_ENV || 'qa';
-      const dbServer = environment2 === 'dev'
+      const dbServer = environment === 'dev'
         ? '192.168.139.160'
         : (config.env.dbOCserver_QA || '192.168.139.161');
 

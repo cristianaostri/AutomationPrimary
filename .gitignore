@@ -20,3 +20,4 @@ cypress/connect_vpn.sh
 switch-env.sh
 cypress/support/environments/
 cypress/support/environments/
+cypress/support/environments/
