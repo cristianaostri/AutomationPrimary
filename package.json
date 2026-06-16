@@ -5,21 +5,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "install:requirements": "xargs npm install --save-dev < requirements.txt",
     "run:server": "json-server --watch db.json",
-
     "test:headless": "cypress run",
-    
-    "cy:open": "npx cypress open",
+    "cy:open": "npx cypress open --browser chrome",
     "cy:open:dev": "npx cypress open --env CYPRESS_ENV=dev",
     "cy:open:qa": "npx cypress open --env CYPRESS_ENV=qa",
     "cy:open:uat": "npx cypress open --env CYPRESS_ENV=uat",
-
     "test:run": "npx cypress run --browser chrome --env CYPRESS_ENV=${CYPRESS_ENV:-qa},TAGS=\"${TAGS:-}\"",
     "test:dev": "npx cypress run --env CYPRESS_ENV=dev --browser chrome",
     "test:qa": "npx cypress run --env CYPRESS_ENV=qa --browser chrome",
     "test:uat": "npx cypress run --env CYPRESS_ENV=uat --browser chrome",
-    
     "vpn:connect": "./cypress/connect_vpn.sh",
-
     "clean:reports": "rm -rf cypress/reports",
     "pretest:master": "npm run clean:reports",
     "report:merge": "npx mochawesome-merge cypress/reports/temp_jsons/*.json > cypress/reports/master_report.json",
@@ -32,7 +27,7 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
-    "cypress": "^13.0.0",
+    "cypress": "^15.15.0",
     "cypress-mochawesome-reporter": "^3.8.4",
     "dayjs": "^1.11.9",
     "esbuild": "^0.20.0",

@@ -1,0 +1,10 @@
+{
+  "caratulaNumero": 0,
+  "tipoEntregadorId": 1,
+  "operaciones": [],
+  "estadoAFIPId": null,
+  "numeroCertificadoAFIP": null,
+  "estadoSituacionBolsaId": null,
+  "agenteComprador": null,
+  "cuentaComprador": null
+}

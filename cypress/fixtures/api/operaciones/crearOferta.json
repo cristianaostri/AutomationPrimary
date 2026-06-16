@@ -3,13 +3,13 @@
   "tipoEntregador": 1,
   "cosecha": 2627,
   "convenida": {
-    "agenteConvenida": "null",
-    "clienteConvenida": "null"
+    "agenteConvenida": "0",
+    "clienteConvenida": "0"
   },
   "operaciones": [
     {
-      "operacionNumero": 28108071,
-      "cantidadToneladas": 300
+      "operacionNumero": 28108406,
+      "cantidadToneladas": 700
     }
   ]
 }

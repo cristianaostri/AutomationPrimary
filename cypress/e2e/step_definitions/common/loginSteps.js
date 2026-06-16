@@ -6,9 +6,9 @@ Given("que el usuario navega a la pagina de inicio de sesion", () => {
 });
 
 When("el usuario ingresa credenciales validas", () => {
-  // cy.env() busca en las variables cargadas desde qa.js/dev.js
-  const user = cy.env('frontendUser'); 
-  const pass = cy.env('frontendPassword');
+  // Cypress.env() busca en las variables cargadas desde qa.js/dev.js
+  const user = Cypress.env('frontendUser'); 
+  const pass = Cypress.env('frontendPassword');
   
   loginPage.login(user, pass);
 });

@@ -11,7 +11,7 @@ When('obtengo la lista de carátulas en estado pendiente de firma', () => {
   
   cy.request({
     method: 'GET',
-    url: `${url}/Caratulas?estado=pendienteFirma`,
+    url: `${url}/Caratulas?estadoId=1`,
     headers: { Authorization: `Bearer ${token}` }
   }).then((response) => {
     expect(response.status).to.eq(200);

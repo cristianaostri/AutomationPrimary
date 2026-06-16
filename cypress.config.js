@@ -16,13 +16,23 @@ module.exports = defineConfig({
     overwrite: false
   },
   e2e: {
+    
     specPattern: "cypress/e2e/features/**/*.feature",
+    allowCypressEnv: true, 
     async setupNodeEvents(on, config) {
+       // --- 1. MANEJO DE NAVEGADORES (Solución estándar de memoria para Linux) ---
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        if (browser.name === 'chrome' || browser.name === 'chromium') {
+          launchOptions.args.push('--disable-dev-shm-usage');
+        }
+        return launchOptions;
+      });
+
       // --- 1. PLUGINS (Gherkin & Reports) ---
       await addCucumberPreprocessorPlugin(on, config);
       require('cypress-mochawesome-reporter/plugin')(on);
       on("file:preprocessor", createBundler({ plugins: [createEsbuildPlugin(config)] }));
-
+      
       // --- 2. CARGA DE AMBIENTE (Usando tu lógica de projectRoot) ---
       const environment = config.env.CYPRESS_ENV || process.env.CYPRESS_ENV || 'qa';
       try {
