@@ -18,3 +18,4 @@ cypress/connect_vpn.sh
 .env.vpn
 .clinerules
 switch-env.sh
+cypress/support/environments/
