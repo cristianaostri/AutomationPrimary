@@ -34,7 +34,7 @@ Cypress.Commands.add('loginViaApi', () => {
     method: 'POST',
     url: `${mainApiUrl}/Auth/Token`,
     form: true,
-    body: { username, password, application: 'OneClearing' },
+    body: { username, password },
     failOnStatusCode: false,
   }).then((response) => {
     expect(response.status).to.eq(200);
