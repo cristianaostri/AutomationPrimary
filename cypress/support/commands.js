@@ -37,6 +37,8 @@ Cypress.Commands.add('loginViaApi', () => {
     body: { username, password },
     failOnStatusCode: false,
   }).then((response) => {
+    cy.log(`LOGIN STATUS: ${response.status}`);
+    cy.log(`LOGIN BODY: ${JSON.stringify(response.body)}`);
     expect(response.status).to.eq(200);
     const token = response.body.access_token;
     expect(token, 'Token debe existir').to.exist;
