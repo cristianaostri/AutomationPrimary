@@ -29,15 +29,16 @@ pipeline {
         }
 
         stage('Ejecutar tests Cypress') {
-            steps {
-                sh """
-                    npx cypress run \
-                        --browser chrome \
-                        --headless \
-                        --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}"
-                """
-            }
-        }
+    steps {
+        sh """
+            echo "=== DEBUG ENV ===" 
+            npx cypress run \
+                --browser chrome \
+                --headless \
+                --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}",mainApiUrl=https://api.oneclearing.testing.primary/api/v1
+        """
+    }
+}
     }
 
     post {
