@@ -19,17 +19,16 @@ pipeline {
                     url: 'https://github.com/cristianaostri/AutomationPrimary'
             }
         }
-        
         stage('Instalar dependencias') {
             steps {
                 sh 'npm install --legacy-peer-deps'
             }
         }
-	stage('Limpiar reportes anteriores') {
-	    steps {
-		sh 'rm -rf cypress/reports/temp_jsons || true'
-	    }
-	}
+        stage('Limpiar reportes anteriores') {
+            steps {
+                sh 'rm -rf cypress/reports/temp_jsons || true'
+            }
+        }
         stage('Ejecutar tests Cypress') {
             steps {
                 withCredentials([
@@ -42,22 +41,21 @@ pipeline {
             }
         }
         stage('Copiar reporte') {
-   	 steps {
-        sh 'cp cypress/reports/temp_jsons/index.html /home/cristian/Escritorio/reportes/reporte_$(date +%Y%m%d_%H%M).html || true'
-    }
-}
+            steps {
+                sh "cp cypress/reports/temp_jsons/index.html /reportes/reporte_${BUILD_NUMBER}_${params.TAGS}.html || true"
+            }
+        }
     }
     post {
-       always {
+    always {
         archiveArtifacts artifacts: 'cypress/reports/**/*', allowEmptyArchive: true
-        sh 'cp cypress/reports/temp_jsons/index.html /reportes/reporte_${BUILD_NUMBER}_${params.TAGS}.html || true'
         echo "📊 Reporte archivado — ${params.ENVIRONMENT} | ${params.TAGS}"
-    	}
-        success {
-            echo "✅ Tests OK en ${params.ENVIRONMENT} con ${params.TAGS}"
-        }
-        failure {
-            echo "❌ Tests fallaron en ${params.ENVIRONMENT} con ${params.TAGS}"
-        }
     }
+    success {
+        echo "✅ Tests OK en ${params.ENVIRONMENT} con ${params.TAGS}"
+    }
+    failure {
+        echo "❌ Tests fallaron en ${params.ENVIRONMENT} con ${params.TAGS}"
+    }
+}
 }
