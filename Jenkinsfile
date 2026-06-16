@@ -30,13 +30,13 @@ pipeline {
 
         stage('Ejecutar tests Cypress') {
     steps {
-        sh """
-            echo "=== DEBUG ENV ===" 
-            npx cypress run \
-                --browser chrome \
-                --headless \
-                --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}",mainApiUrl=https://api.oneclearing.testing.primary/api/v1
-        """
+        withCredentials([
+            string(credentialsId: 'API_USER', variable: 'API_USER'),
+            string(credentialsId: 'API_PASSWORD', variable: 'API_PASSWORD')
+        ]) {
+            sh """npx cypress run --browser chrome --headless \
+              --env CYPRESS_ENV=${params.ENVIRONMENT},TAGS="${params.TAGS}",mainApiUrl=https://api.oneclearing.testing.primary/api/v1,apiUser=${API_USER},apiPassword=${API_PASSWORD}"""
+        }
     }
 }
     }
