@@ -8,7 +8,7 @@ pipeline {
         )
         choice(
             name: 'TAGS',
-            choices: ['@regression', '@smoke', '@api', '@filtros', '@firmarCaratula', '@flujocasamiento'],
+            choices: ['@regression', '@smoke', '@api', '@filtros', '@firmarcaratula', '@flujocasamiento'],
             description: 'Qué suite de tests ejecutar'
         )
     }
