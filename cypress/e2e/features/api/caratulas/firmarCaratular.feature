@@ -1,4 +1,4 @@
-@api @caratulas
+@api @caratulas @firmarcaratula
 Feature: Flujo completo de Carátulas
 
   Background: Autenticación exitosa
